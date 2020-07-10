@@ -83,3 +83,21 @@ let beginPrompt = () => {
           }
       });
 }
+let viewEmployees = () => {
+  var query = "SELECT * FROM employee";
+  connection.query(query, (err, answer) => {
+      if (err) throw err;
+      console.log("All employees currently employed");
+      console.table(answer);
+  });
+  beginPrompt();
+}
+// this function allows users to view all dept.
+let viewEmployeesDept = () => {
+  connection.query("SELECT * FROM department", (err, answer) => {
+      if (err) throw err;
+      console.log("All departments");
+      console.table(answer);
+  });
+  beginPrompt();
+}
