@@ -101,3 +101,70 @@ let viewEmployeesDept = () => {
   });
   beginPrompt();
 }
+// this fucntion allows users to view employees by manager.
+let viewEmployeesManager = () => {
+  connection.query("SELECT * FROM employee ORDER BY manager_id", (err, answer) => {
+      if (err) throw err;
+      console.log("all employees by manager id");
+      console.table(answer);
+  });
+  beginPrompt();
+}
+
+let viewRoles = () => {
+  var query = "SELECT * FROM emprole";
+  connection.query(query, (err, answer) => {
+      if (err) throw err;
+      console.log("All employees currently employed");
+      console.table(answer);
+  });
+  beginPrompt();
+}
+
+let addRole = () => {
+  connection.query("SELECT * FROM emprole", (err, results) => {
+      inquirer.prompt([
+          {
+              name: "emproleid",
+              type: "input",
+              message: "Enter desired role id# Greater then 8"
+          },
+          {
+                  name: "roleTitle",
+                  type: "input",
+                  message: "Enter name of new role"
+              },
+              {
+                  name: "roleSalary",
+                  type: "input",
+                  message: "Enter the salary amount"
+              },
+              {
+                  name: "roleDeptID",
+                  type: "rawlist",
+                  choices: function () {
+                      var choiceArray = [];
+                      for (var i = 0; i < results.length; i++) {
+                          choiceArray.push(results[i].department_id);
+                      }
+                      return choiceArray
+                  }
+
+              }
+          ])
+          .then((answer) => {
+              connection.query("INSERT INTO emprole SET ?", {
+                      id: answer.emproleid,
+                      title: answer.roleTitle,
+                      salary: answer.roleSalary,
+                      department_id: answer.roleDeptID
+                  }),
+                  (err) => {
+                      if (err) throw err;
+                  }
+              console.log("Successfully added role")
+              beginPrompt();
+          })
+  }); 
+}
+
