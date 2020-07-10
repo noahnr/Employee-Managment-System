@@ -168,3 +168,66 @@ let addRole = () => {
   }); 
 }
 
+let addEmployee = () => {
+  connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) throw err;
+      inquirer
+          .prompt([
+              {
+                  name: "empid",
+                  type: "input",
+                  message: "Enter desired employee id# Greater then 8"
+              },
+              {
+                  name: "firstName",
+                  type: "input",
+                  message: "Type in employees first name."
+              },
+              {
+                  name: "lastName",
+                  type: "input",
+                  message: "Type in employees last name."
+              },
+              {
+                  name: "roleID",
+                  type: "rawlist",
+                  choices: function () {
+                      var choiceArray = [];
+                      for (var i = 0; i < results.length; i++) {
+                          choiceArray.push(results[i].role_id);
+                      }
+                      return choiceArray;
+                  }
+              },
+              {
+                  name: "managerID",
+                  type: "rawlist",
+                  choices: function () {
+                      var choiceArray = [];
+                      for (var i = 0; i < results.length; i++) {
+                          choiceArray.push(results[i].manager_id);
+                      }
+                      return choiceArray;
+                  }
+                     
+              }
+
+          ])
+          .then((answer) => {
+              connection.query("INSERT INTO employee SET ?", {
+                      id: answer.empid,
+                      first_name: answer.firstName,
+                      last_name: answer.lastName,
+                      role_id: answer.roleID,
+                      manager_id: answer.managerID
+                  }),
+                  (err) => {
+                      if (err) throw err;
+                  }
+              console.log("Successfully added employee")
+              beginPrompt();
+          });            
+  });
+  
+}    
+
