@@ -1,14 +1,63 @@
-create table employeee(
-   emp_id INT NOT NULL AUTO_INCREMENT,
-   emp_name VARCHAR(100) NOT NULL,
-   dob DATE,
-   age INT,
-   sex VARCHAR(2),
-   designation VARCHAR(20),
-   mob_number VARCHAR(15),
-   emp_address VARCHAR(50),
-   city VARCHAR(20),
-   emp_salary VARCHAR(20),
-   join_date DATE,
-   PRIMARY KEY ( emp_id )
-);
+let removeEmployee = () => {
+  connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) throw err;
+      inquirer
+          .prompt([{
+              name: "remove",
+              type: "input",
+              message: "Enter employee ID# you wish to remove"
+          }])
+          .then((answer) => {
+              connection.query("DELETE FROM employee where ?", {
+                  id: answer.remove
+
+              });
+              console.log("Successfully deleted employee")
+              beginPrompt();
+          });
+  });
+
+}
+
+let removeRole = () => {
+  connection.query("SELECT * FROM emprole", (err, results) => {
+      if (err) throw err;
+      inquirer
+          .prompt([{
+              name: "remove",
+              type: "input",
+              message: "Enter role ID# you wish to remove"
+          }])
+          .then((answer) => {
+              connection.query("DELETE FROM emprole where ?", {
+                  id: answer.remove
+
+              });
+              console.log("Successfully deleted role")
+              beginPrompt();
+          });
+  });
+
+}
+
+let removeManager = () => {
+  connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) throw err;
+      inquirer
+          .prompt([{
+              name: "remManager",
+              type: "input",
+              message: "Enter manager ID# you wish to remove (5, 6, 7)"
+          }])
+          .then((answer) => {
+              connection.query("DELETE FROM employee where ?", {
+                 manager_id: answer.remManager
+
+              });
+              console.log("Successfully deleted manager");
+              console.table(answer);
+              beginPrompt();
+          });
+  });
+
+}
